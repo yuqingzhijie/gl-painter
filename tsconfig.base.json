@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "declaration": true,
+    // "declarationMap": true,
+    // "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@gl/*": ["packages/*/src"]
+    },
+    "composite": true,
+    "noImplicitAny": false,
+    "types": ["vitest/globals"]
+  },
+  "exclude": ["node_modules", "dist"]
+}

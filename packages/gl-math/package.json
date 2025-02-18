@@ -1,0 +1,17 @@
+{
+  "name": "gl-math",
+  "version": "0.0.0",
+  "description": "gl-math",
+  "main": "dist/gl-math.cjs.js",
+  "module": "dist/gl-math.esm.js",
+  "types": "dist/gl-math.d.ts",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production rollup -c",
+    "dev": "rollup -c --watch"
+  },
+  "keywords": [
+    "matrix",
+    "vector"
+  ],
+  "packageManager": "pnpm@10.4.1"
+}
