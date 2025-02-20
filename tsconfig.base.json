@@ -2,6 +2,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "composite": true,
     "declaration": true,
     // "declarationMap": true,
     // "sourceMap": true,
@@ -10,9 +13,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@gl/*": ["packages/*/src"]
+      "@painter/*": ["packages/*/src/index.ts"]
     },
-    "composite": true,
     "noImplicitAny": false,
     "types": ["vitest/globals"]
   },

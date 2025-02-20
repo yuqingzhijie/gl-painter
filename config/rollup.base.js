@@ -5,6 +5,7 @@ import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
+import del from 'rollup-plugin-delete'
 import dts from 'rollup-plugin-dts'
 
 function getPackageName(pkgDir) {
@@ -39,17 +40,16 @@ export function createRollupConfig({ pkgDir, formatList, iifeName }) {
         nodeResolve(),
         commonjs(),
         typescript({
-          outputToFilesystem: true,
+          outputToFilesystem: false,
         }),
         process.env.NODE_ENV === 'production' && terser(),
       ].filter(Boolean),
     }
   }
 
-  // composite不设为false，下面会导致构建失败
   function config2() {
     return {
-      input,
+      input: path.join(pkgDir, 'dist/types/index.d.ts'),
       output: {
         file: path.join(pkgDir, 'dist', `${packageName}.d.ts`),
         format: 'es',
@@ -57,9 +57,14 @@ export function createRollupConfig({ pkgDir, formatList, iifeName }) {
       plugins: [
         dts({
           tsconfig: path.join(pkgDir, 'tsconfig.json'),
-          // 确保所有嵌套类型合并到单文件
-          // compilerOptions: { preserveSymlinks: false }
+          compilerOptions: {
+            preserveSymlinks: false, // 确保路径解析与 monorepo 结构一致
+            paths: {
+              '@painter/gl-math': '../packages/gl-math',
+            },
+          },
         }),
+        del({ hook: 'buildEnd', targets: './dist/types' }),
       ],
     }
   }

@@ -1,0 +1,20 @@
+{
+  "name": "@painter/gl-canvas",
+  "version": "0.0.0",
+  "description": "@painter/gl-canvas",
+  "main": "dist/gl-canvas.cjs.js",
+  "module": "dist/gl-canvas.esm.js",
+  "types": "dist/gl-canvas.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production rollup -c",
+    "dev": "rollup -c --watch"
+  },
+  "dependencies": {
+    "@painter/gl-math": "workspace:*"
+  },
+  "keywords": [
+    "webgl"
+  ],
+  "sideEffects": false
+}
