@@ -9,9 +9,9 @@ export default class Context {
     this._viewMatrix = Matrix.IDENTITY
     this.canvasSize = { width: device.width(), height: device.height() }
     this.orthoUnits = Context.INIT_ORTHO_UNIT
-    this.ambientLightColor = new Color(120, 120, 120)
-    this.pointLightColor = new Color(200, 200, 200)
-    this.pointLightVector = new Vector(1, 1, 1)
+    this.ambientLightColor = new Color(135, 135, 135)
+    this.directionalLightColor = new Color(200, 200, 200)
+    this.directionalLightVector = new Vector(1, 1, 1)
     this.renderMode = RenderMode.Shaded
 
     this.updateVertexMatrix()
@@ -138,8 +138,8 @@ export default class Context {
   private _orthoUnits!: number
 
   ambientLightColor: Color
-  pointLightColor: Color
-  pointLightVector: Vector
+  directionalLightColor: Color
+  directionalLightVector: Vector
 
   renderMode: RenderMode
 

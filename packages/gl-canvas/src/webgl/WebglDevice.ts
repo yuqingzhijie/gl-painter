@@ -6,11 +6,13 @@ import { LineBufferType } from '../buffer/LineBufferType'
 import PointBuffer from '../buffer/PointBuffer'
 import TextureBuffer from '../buffer/TextureBuffer'
 import Color from '../Color'
+import { FRAME_INTERVAL_TIME } from '../config'
 import Context from '../Context'
 import type Device from '../Device'
 import type EventHandler from '../event/EventHandler'
 import type IndexBuffer from '../IndexBuffer'
 import type Texture from '../Texture'
+import { throttle } from '../utils'
 import type VertexBuffer from '../VertexBuffer'
 import ColoredDashedLineProgram from '../webgl/program/ColoredDashedLineProgram'
 import ColoredFaceProgram from '../webgl/program/ColoredFaceProgram'
@@ -74,9 +76,9 @@ export default class WebglDevice implements Device {
       return eventHandler.onMouseDown(ev)
     }
 
-    canvas.onmousemove = (ev: MouseEvent) => {
+    canvas.onmousemove = throttle((ev: MouseEvent) => {
       return eventHandler.onMouseMove(ev)
-    }
+    }, FRAME_INTERVAL_TIME)
 
     canvas.onmouseup = (ev: MouseEvent) => {
       return eventHandler.onMouseUp(ev)
@@ -482,18 +484,19 @@ export default class WebglDevice implements Device {
       ...color.rgba,
     )
 
-    const { ambientLightColor, pointLightColor, pointLightVector } = context
+    const { ambientLightColor, directionalLightColor, directionalLightVector } =
+      context
     webgl.uniform3f(
       faceProgram.ambientColorUniformPosition,
       ...ambientLightColor.rgb,
     )
     webgl.uniform3f(
-      faceProgram.pointColorUniformPosition,
-      ...pointLightColor.rgb,
+      faceProgram.lightColorUniformPosition,
+      ...directionalLightColor.rgb,
     )
     webgl.uniform3f(
-      faceProgram.pointVectorUniformPosition,
-      ...pointLightVector.xyz,
+      faceProgram.lightDirectionUniformPosition,
+      ...directionalLightVector.xyz,
     )
 
     webgl.bindBuffer(

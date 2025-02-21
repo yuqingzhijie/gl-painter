@@ -24,24 +24,30 @@ export default class ColoredFaceProgram extends WebglProgram {
     
     uniform vec4 uColor;
     uniform vec3 uAmbientLightColor;
-    uniform vec3 uPointLightVertex;
-    uniform vec3 uPointLightColor;
+    uniform vec3 uDirectionalLightDirection;
+    uniform vec3 uDirectionalLightColor;
     
     varying vec3 vVertex;
     varying vec3 vNormal;
 
     void main() {
         vec3 normal = normalize(vNormal);
-        vec3 direction = normalize(uPointLightVertex - vVertex);
-        vec3 diffuse = uPointLightColor * uColor.rgb * max(dot(direction, normal), 0.0);
+        vec3 lightDirection = normalize(uDirectionalLightDirection);
+        vec3 diffuse = uDirectionalLightColor * uColor.rgb * max(dot(lightDirection, normal), 0.0);
         vec3 ambient = uAmbientLightColor * uColor.rgb;
+        vec3 viewPointVertex = vec3(1, 1, 2);
+        vec3 surfaceToViewDirection = normalize(viewPointVertex - vVertex);
+        vec3 halfVector = normalize(surfaceToViewDirection + lightDirection);
+        float specular = max(dot(normal, halfVector), 0.0);
+        specular = pow(specular, 40.0) / 2.0;
 
         // vec3 point = normalize(vVertex.xyz);
-        if (dot(vVertex.xyz, vec3(0, 0, 1.0)) > -0.005) {
+        // if (dot(vVertex.xyz, vec3(0, 0, 1.0)) > -0.005) {
             gl_FragColor = vec4(diffuse + ambient, uColor.a);
-        } else {
-            discard;
-        }
+            gl_FragColor.rgb += specular;
+        // } else {
+        //     discard;
+        // }
     }
     `
 
@@ -62,13 +68,13 @@ export default class ColoredFaceProgram extends WebglProgram {
       this.program,
       'uAmbientLightColor',
     ) as WebGLUniformLocation
-    this.pointVectorUniformPosition = webgl.getUniformLocation(
+    this.lightDirectionUniformPosition = webgl.getUniformLocation(
       this.program,
-      'uPointLightVertex',
+      'uDirectionalLightDirection',
     ) as WebGLUniformLocation
-    this.pointColorUniformPosition = webgl.getUniformLocation(
+    this.lightColorUniformPosition = webgl.getUniformLocation(
       this.program,
-      'uPointLightColor',
+      'uDirectionalLightColor',
     ) as WebGLUniformLocation
   }
 
@@ -78,6 +84,6 @@ export default class ColoredFaceProgram extends WebglProgram {
   normalMatrixUniformPosition: WebGLUniformLocation
   colorUniformPosition: WebGLUniformLocation
   ambientColorUniformPosition: WebGLUniformLocation
-  pointVectorUniformPosition: WebGLUniformLocation
-  pointColorUniformPosition: WebGLUniformLocation
+  lightDirectionUniformPosition: WebGLUniformLocation
+  lightColorUniformPosition: WebGLUniformLocation
 }

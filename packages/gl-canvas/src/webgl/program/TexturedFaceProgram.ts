@@ -29,8 +29,8 @@ export default class TexturedFaceProgram extends WebglProgram {
 
     uniform vec4 uColor;
     uniform vec3 uAmbientLight;
-    uniform vec3 uPointLightColor;
-    uniform vec3 uPointLightLocation;
+    uniform vec3 uDirectionalLightColor;
+    uniform vec3 uDirectionalLightDirection;
     
     varying highp vec3 vVertex;
     varying highp vec3 vNormal;
@@ -45,8 +45,8 @@ export default class TexturedFaceProgram extends WebglProgram {
         }
 
         vec3 normal = normalize(vNormal);
-        vec3 direction = normalize(uPointLightLocation - vVertex);
-        vec3 diffuse = uPointLightColor * color.rgb * max(dot(direction, normal), 0.0);
+        vec3 direction = normalize(uDirectionalLightDirection);
+        vec3 diffuse = uDirectionalLightColor * color.rgb * max(dot(direction, normal), 0.0);
         vec3 ambient = uAmbientLight * color.rgb;
 
         gl_FragColor = vec4(diffuse + ambient, color.a);
@@ -77,13 +77,13 @@ export default class TexturedFaceProgram extends WebglProgram {
       this.program,
       'uAmbientLight',
     ) as WebGLUniformLocation
-    this.pointColorUniformPosition = webgl.getUniformLocation(
+    this.lightColorUniformPosition = webgl.getUniformLocation(
       this.program,
-      'uPointLightColor',
+      'uDirectionalLightColor',
     ) as WebGLUniformLocation
-    this.pointVectorUniformPosition = webgl.getUniformLocation(
+    this.lightDirectionUniformPosition = webgl.getUniformLocation(
       this.program,
-      'uPointLightLocation',
+      'uDirectionalLightDirection',
     ) as WebGLUniformLocation
   }
 
@@ -93,8 +93,8 @@ export default class TexturedFaceProgram extends WebglProgram {
   normalMatrixUniformPosition: WebGLUniformLocation
   colorUniformPosition: WebGLUniformLocation
   ambientColorUniformPosition: WebGLUniformLocation
-  pointVectorUniformPosition: WebGLUniformLocation
-  pointColorUniformPosition: WebGLUniformLocation
+  lightDirectionUniformPosition: WebGLUniformLocation
+  lightColorUniformPosition: WebGLUniformLocation
 
   textureCoordPosition: number
   samplerUniformPosition: WebGLUniformLocation

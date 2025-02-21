@@ -1,4 +1,9 @@
 import { Matrix, Vector } from '@painter/gl-math'
+import {
+  FRAME_INTERVAL_TIME,
+  MouseButtonsEnum,
+} from 'packages/gl-canvas/src/config'
+import { debounce } from 'packages/gl-canvas/src/utils'
 import Canvas from '../Canvas'
 import Vertex from '../geom/Vertex'
 import DummyEventHandler from './DummyEventHandler'
@@ -8,13 +13,26 @@ export default class ViewEventHandler extends DummyEventHandler {
   constructor(canvas: Canvas, next: EventHandler | null = null) {
     super(next)
     this.canvas = canvas
+    this.debouncePick = debounce(this.canvas.pick, FRAME_INTERVAL_TIME).bind(
+      this.canvas,
+    )
   }
 
   onMouseMove(ev: MouseEvent): boolean {
+    if (ev.buttons === MouseButtonsEnum.Left || this.mouseJustLeaving) {
+      return true
+    }
+
+    let dx = ev.movementX
+    let dy = ev.movementY
+    if (this.x !== 0 || this.y !== 0) {
+      dx = ev.offsetX * devicePixelRatio - this.x
+      dy = ev.offsetY * devicePixelRatio - this.y
+    }
+    this.x = ev.offsetX * devicePixelRatio
+    this.y = ev.offsetY * devicePixelRatio
     const device = this.canvas.device
     const context = this.canvas.context
-    const dx = ev.movementX
-    const dy = ev.movementY
 
     /**
      * 兼容组合鼠标按键
@@ -83,6 +101,13 @@ export default class ViewEventHandler extends DummyEventHandler {
   }
 
   onMouseUp(ev: MouseEvent): boolean {
+    if (
+      ev.buttons === MouseButtonsEnum.NoClick ||
+      ev.buttons === MouseButtonsEnum.Left
+    ) {
+      this.x = 0
+      this.y = 0
+    }
     this.buttonType = -1
     switch (ev.button) {
       case 1:
@@ -99,6 +124,12 @@ export default class ViewEventHandler extends DummyEventHandler {
   }
 
   onMouseLeave(ev: MouseEvent): boolean {
+    this.x = 0
+    this.y = 0
+    this.mouseJustLeaving = true
+    setTimeout(() => {
+      this.mouseJustLeaving = false
+    }, FRAME_INTERVAL_TIME)
     this.buttonType = -1
     super.onMouseLeave(ev)
     return true
@@ -150,10 +181,15 @@ export default class ViewEventHandler extends DummyEventHandler {
     ).multiply(context.viewMatrix)
 
     this.canvas.draw()
-    this.canvas.pick()
+    this.debouncePick()
     return true
   }
 
   canvas: Canvas
   buttonType!: number
+  private x = 0
+  private y = 0
+  // move节流，leave没，可能导致leave后继续触发move，加个mouseJustLeaving做判断
+  private mouseJustLeaving = false
+  private debouncePick: typeof this.canvas.pick
 }
