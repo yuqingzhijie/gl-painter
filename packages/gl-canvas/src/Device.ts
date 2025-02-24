@@ -31,6 +31,10 @@ export default interface Device {
   disableDepth(): void
   enableDepth(): void
 
+  cullFrontFace(): void
+  cullBackFace(): void
+  disableCullFace(): void
+
   depthMask(flag: boolean): void
 
   beginDraw(): void

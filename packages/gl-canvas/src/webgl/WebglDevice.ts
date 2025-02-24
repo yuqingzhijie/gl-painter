@@ -287,6 +287,20 @@ export default class WebglDevice implements Device {
     webgl.enable(webgl.DEPTH_TEST)
   }
 
+  cullFrontFace(): void {
+    this.webgl.enable(this.webgl.CULL_FACE)
+    this.webgl.cullFace(this.webgl.FRONT)
+  }
+
+  cullBackFace(): void {
+    this.webgl.enable(this.webgl.CULL_FACE)
+    this.webgl.cullFace(this.webgl.BACK)
+  }
+
+  disableCullFace(): void {
+    this.webgl.disable(this.webgl.CULL_FACE)
+  }
+
   depthMask(flag: boolean): void {
     this.webgl.depthMask(flag)
   }
@@ -309,7 +323,7 @@ export default class WebglDevice implements Device {
       false,
       context.vertexMatrix.array,
     )
-    webgl.uniform4f(pointProgram.colorUniformPosition, ...color.rgba)
+    webgl.uniform4f(pointProgram.colorUniformPosition, ...color.decimalRgba)
 
     webgl.bindBuffer(
       webgl.ARRAY_BUFFER,
@@ -355,7 +369,7 @@ export default class WebglDevice implements Device {
       false,
       context.vertexMatrix.array,
     )
-    webgl.uniform4f(lineProgram.colorUniformPosition, ...color.rgba)
+    webgl.uniform4f(lineProgram.colorUniformPosition, ...color.decimalRgba)
 
     webgl.bindBuffer(
       webgl.ARRAY_BUFFER,
@@ -426,7 +440,7 @@ export default class WebglDevice implements Device {
     webgl.useProgram(line2DProgram.program)
 
     // webgl.uniformMatrix4fv(Line2DProgram.vertexMatrixUniformPosition, false, context.vertexMatrix.array);
-    webgl.uniform4f(line2DProgram.colorUniformPosition, ...color.rgba)
+    webgl.uniform4f(line2DProgram.colorUniformPosition, ...color.decimalRgba)
 
     webgl.bindBuffer(
       webgl.ARRAY_BUFFER,
@@ -481,18 +495,18 @@ export default class WebglDevice implements Device {
     )
     webgl.uniform4f(
       (faceProgram as ColoredFaceProgram).colorUniformPosition,
-      ...color.rgba,
+      ...color.decimalRgba,
     )
 
     const { ambientLightColor, directionalLightColor, directionalLightVector } =
       context
     webgl.uniform3f(
       faceProgram.ambientColorUniformPosition,
-      ...ambientLightColor.rgb,
+      ...ambientLightColor.decimalRgb,
     )
     webgl.uniform3f(
       faceProgram.lightColorUniformPosition,
-      ...directionalLightColor.rgb,
+      ...directionalLightColor.decimalRgb,
     )
     webgl.uniform3f(
       faceProgram.lightDirectionUniformPosition,
@@ -574,7 +588,7 @@ export default class WebglDevice implements Device {
     webgl.useProgram(face2DProgram.program)
     webgl.uniform4f(
       (face2DProgram as ColoredFaceProgram).colorUniformPosition,
-      ...color.rgba,
+      ...color.decimalRgba,
     )
 
     webgl.bindBuffer(

@@ -39,7 +39,7 @@ export default class ColoredFaceProgram extends WebglProgram {
         vec3 surfaceToViewDirection = normalize(viewPointVertex - vVertex);
         vec3 halfVector = normalize(surfaceToViewDirection + lightDirection);
         float specular = max(dot(normal, halfVector), 0.0);
-        specular = pow(specular, 40.0) / 2.0;
+        specular = pow(specular, 40.0) / 4.0;
 
         // vec3 point = normalize(vVertex.xyz);
         // if (dot(vVertex.xyz, vec3(0, 0, 1.0)) > -0.005) {
