@@ -117,6 +117,9 @@ export default class Vector {
   }
 
   static readonly X_AXIS: Vector = Object.freeze(new Vector(1.0, 0.0, 0.0))
+  static readonly NEG_X_AXIS: Vector = Object.freeze(new Vector(-1.0, 0.0, 0.0))
   static readonly Y_AXIS: Vector = Object.freeze(new Vector(0.0, 1.0, 0.0))
+  static readonly NEG_Y_AXIS: Vector = Object.freeze(new Vector(0.0, -1.0, 0.0))
   static readonly Z_AXIS: Vector = Object.freeze(new Vector(0.0, 0.0, 1.0))
+  static readonly NEG_Z_AXIS: Vector = Object.freeze(new Vector(0.0, 0.0, -1.0))
 }

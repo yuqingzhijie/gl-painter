@@ -100,8 +100,8 @@ export default class Context {
   }
 
   private updateNormalMatrix(): void {
-    this._normalMatrix = this._modelMatrix
-      .multiply(this._viewMatrix)
+    this._normalMatrix = this._viewMatrix
+      .multiply(this._modelMatrix)
       .inverse()
       .transpose()
   }

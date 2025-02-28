@@ -146,6 +146,7 @@ export default class Matrix {
         ]
   }
 
+  /** 右乘b = a * r */
   rotate(axis: Vector, angle: number): Matrix {
     const m = new Matrix()
 
@@ -273,7 +274,7 @@ export default class Matrix {
         ]
     }
 
-  getAngle(): [number, number, number] {
+  getAngle3(): [number, number, number] {
     const translateMatrix = Matrix.IDENTITY.translate(
       new Vector(...this.getTranslation()),
     )
@@ -327,6 +328,41 @@ export default class Matrix {
     const atanz = getATan(sinzcosy, coszcosy)
 
     return [atanx, asiny, atanz]
+  }
+
+  getAngle(): [number, number, number] {
+    const rotationMatrix = this.getRotationMatrix() // 提取旋转矩阵
+    const rmArr = rotationMatrix.array
+    const m11 = rmArr[0],
+      m12 = rmArr[1],
+      m13 = rmArr[2]
+    const m21 = rmArr[4]
+    const m31 = rmArr[8],
+      m32 = rmArr[9],
+      m33 = rmArr[10]
+
+    let thetaX, thetaY, thetaZ
+
+    // 处理万向节锁情况（sinY ≈ 0）
+    thetaY = Math.asin(m31)
+    if (Math.abs(Math.abs(m31) - 1) > Matrix.EPSILON) {
+      const cosY = Math.cos(thetaY)
+      thetaX = Math.atan2(-m32 / cosY, m33 / cosY)
+      thetaZ = Math.atan2(-m21 / cosY, m11 / cosY)
+    } else {
+      thetaZ = 0 // 任意值，通常设为 0
+      thetaX = Math.atan2(m12, -m13)
+    }
+
+    return [thetaX, thetaY, thetaZ]
+  }
+
+  getRotationMatrix(): Matrix {
+    const translateMatrix = Matrix.IDENTITY.translate(
+      new Vector(...this.getTranslation()),
+    )
+    const rotationMatrix = translateMatrix.inverse().multiply(this.clone())
+    return rotationMatrix
   }
 
   scale(v: Vector): Matrix {

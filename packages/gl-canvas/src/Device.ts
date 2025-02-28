@@ -30,6 +30,7 @@ export default interface Device {
 
   disableDepth(): void
   enableDepth(): void
+  setPolygonOffset(f: number, u: number): void
 
   cullFrontFace(): void
   cullBackFace(): void

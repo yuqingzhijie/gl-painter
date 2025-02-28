@@ -8,7 +8,8 @@
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_ENV=production rollup -c",
-    "dev": "rollup -c --watch"
+    "build:m": "rollup -c --sourcemap",
+    "dev": "rollup -c --sourcemap --watch"
   },
   "keywords": [
     "matrix",

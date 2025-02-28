@@ -9,7 +9,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production rollup -c",
     "build:m": "rollup -c --sourcemap",
-    "dev": "rollup -c --watch"
+    "dev": "rollup -c --sourcemap --watch"
   },
   "dependencies": {
     "@painter/gl-math": "workspace:*"

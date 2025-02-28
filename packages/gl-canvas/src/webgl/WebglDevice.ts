@@ -287,6 +287,10 @@ export default class WebglDevice implements Device {
     webgl.enable(webgl.DEPTH_TEST)
   }
 
+  setPolygonOffset(f: number, u: number): void {
+    this.webgl.polygonOffset(f, u)
+  }
+
   cullFrontFace(): void {
     this.webgl.enable(this.webgl.CULL_FACE)
     this.webgl.cullFace(this.webgl.FRONT)

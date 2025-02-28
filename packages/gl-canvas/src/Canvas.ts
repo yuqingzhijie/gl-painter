@@ -6,30 +6,37 @@ import Container from './geom/Container'
 import WebglDevice from './webgl/WebglDevice'
 
 export default class Canvas {
-  constructor(canvas: HTMLCanvasElement, handler: EventHandler | null = null) {
+  constructor(canvas: HTMLCanvasElement, customContent?: unknown) {
+    this.customContent = customContent || null
     this.eventHandler = new ViewEventHandler(this)
-    this.eventHandler.next = handler
-
     this.device = new WebglDevice(canvas, this.eventHandler)
     this.context = new Context(this.device)
   }
 
   draw(): void {
-    this.device.beginDraw()
-    this.root?.draw(this.device, this.context)
-    this.device.endDraw()
+    if (this.customDraw) {
+      this.customDraw()
+    } else {
+      this.device.beginDraw()
+      this.root?.draw(this.device, this.context)
+      this.device.endDraw()
+    }
   }
 
   pick(): void {
-    this.device.beginPick()
-    this.root?.pick(this.device, this.context)
-    this.picked = this.device.getPicked(
-      0,
-      0,
-      this.device.width(),
-      this.device.height(),
-    )
-    this.device.endPick()
+    if (this.customPick) {
+      this.customPick()
+    } else {
+      this.device.beginPick()
+      this.root?.pick(this.device, this.context)
+      this.picked = this.device.getPicked(
+        0,
+        0,
+        this.device.width(),
+        this.device.height(),
+      )
+      this.device.endPick()
+    }
   }
 
   resize(width: number, height: number): void {
@@ -57,10 +64,26 @@ export default class Canvas {
     return Array.from(set)
   }
 
+  // setCustomContent(content: unknown): void {
+  //   this.customContent = content
+  // }
+
+  setCustomDraw(drawFn: (() => void) | null): void {
+    this.customDraw = drawFn
+  }
+
+  setCustomPick(pickFn: (() => void) | null): void {
+    this.customPick = pickFn
+  }
+
   root?: Container
   context: Context
   device: Device
   eventHandler: EventHandler
+  // 要改成泛型吗
+  customContent: unknown
+  customDraw: (() => void) | null = null
+  customPick: (() => void) | null = null
 
   picked: number[] = []
 }
